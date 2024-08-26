@@ -15,3 +15,4 @@ CoreReturn down_end(Position, float, Board, Bindings, Stack);
 CoreReturn jump_end(Position, float, Board, Bindings, Stack);
 
 CoreReturn bind_end(Position, float, Board, Bindings, Stack);
+CoreReturn write_end(Position, float, Board, Bindings, Stack);

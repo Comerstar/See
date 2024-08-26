@@ -56,6 +56,8 @@ CoreReturn cap_s_func(Position, float, Board, Bindings, Stack);
 CoreReturn cap_m_func(Position, float, Board, Bindings, Stack);
 CoreReturn cap_d_func(Position, float, Board, Bindings, Stack);
 CoreReturn cap_p_func(Position, float, Board, Bindings, Stack);
+CoreReturn cap_y_func(Position, float, Board, Bindings, Stack);
 CoreReturn percent_func(Position, float, Board, Bindings, Stack);
+CoreReturn at_func(Position, float, Board, Bindings, Stack);
 
 CoreReturn dollar_func(Position, float, Board, Bindings, Stack);

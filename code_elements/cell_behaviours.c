@@ -196,6 +196,16 @@ CoreReturn cap_p_func(Position pos, float a, Board, Bindings, Stack stk) {
     return through(pos, a);
 }
 
+CoreReturn cap_y_func(Position pos, float a, Board, Bindings, Stack stk) {
+    add_lambda(stk);
+    return through(pos, a);
+}
+
+CoreReturn at_func(Position pos, float a, Board, Bindings, Stack stk) {
+    add_binop(stk, (Bopo){e_apply, "APPLY"});
+    return through(pos, a);
+}
+
 CoreReturn percent_func(Position pos, float a, Board, Bindings, Stack stk) {
     add_binop(stk, (Bopo){e_mod, "MOD"});
     return through(pos, a);

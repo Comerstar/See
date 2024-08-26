@@ -50,10 +50,10 @@ void right_end_callback(Position, float, Pointer p, Board, Bindings, Stack) {
     p->angle = 0;
 }
 void up_end_callback(Position, float, Pointer p, Board, Bindings, Stack) {
-    p->angle = 3 * M_PI / 2;
+    p->angle = 3 * M_PI_2;
 }
 void down_end_callback(Position, float, Pointer p, Board, Bindings, Stack) {
-    p->angle = M_PI / 2;
+    p->angle = M_PI_2;
 }
 void jump_end_callback(Position pos, float, Pointer p, Board, Bindings, Stack) {
     p->cell = pos.cell;
@@ -71,6 +71,26 @@ void bind_end_callback(Position, float, Pointer p, Board, Bindings bgs, Stack st
             e_free(value);
         }
         e_free(name);
+    }
+    add_angle(p, 1);
+}
+void write_end_callback(Position, float, Pointer p, Board b, Bindings bgs, Stack stk) {
+    StackElement value;
+    // printf("Attempting to write to board\n");
+    if (stk_get(stk, 0, &value)) {
+        switch (value->type) {
+            case String:
+                if (value->element.s != NULL) {
+                    add_char_cell(b, p->cell, value->element.s->c);
+                }
+                break;
+            case Int:
+                if (value->element.s != NULL) {
+                    add_char_cell(b, p->cell, (unsigned char)(value->element.i % 256));
+                }
+                break;
+        }
+        e_free(value);
     }
     add_angle(p, 1);
 }
@@ -105,4 +125,7 @@ CoreReturn jump_end(Position p, float a, Board, Bindings, Stack) {
 }
 CoreReturn bind_end(Position p, float a, Board, Bindings, Stack) {
     return (CoreReturn){bind_end_callback, p, a};
+}
+CoreReturn write_end(Position p, float a, Board, Bindings, Stack) {
+    return (CoreReturn){write_end_callback, p, a};
 }

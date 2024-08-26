@@ -2,44 +2,38 @@
 #pragma once
 #include "../code_core.h"
 
-enum ObjectTypeEnum {
+typedef enum {
     LineT, CircleT, ArcT, EndT
-};
-typedef enum ObjectTypeEnum ObjectType;
+} ObjectType;
 
-enum BehaviourTypeEnum {
+typedef enum {
     ReflectT, RefractT, ThroughT, OtherT, OutT, OpaqueT
-};
-typedef enum BehaviourTypeEnum BehaviourType;
+} BehaviourType;
 
-struct LineStruct {
+typedef struct {
     float x1, y1, x2, y2;
-};
-typedef struct LineStruct Line;
+} Line;
 
-struct CircleStruct {
+typedef struct {
     float x, y, r;
-};
-typedef struct CircleStruct Circle;
+} Circle;
 
-struct ArcStruct {
+typedef struct {
     float x, y, r, a_s, a_e;
-};
-typedef struct ArcStruct Arc;
+} Arc;
 
-struct RefractStruct {
+typedef struct {
     float in_n;
     float out_n;
-};
-typedef struct RefractStruct Refract;
+} Refract;
 
 typedef union {
-        Refract r;
-        CoreReturn (* o) (Position pos, float angle, float normal);
-        EndCallback e;
-    } BehaviourElement;
+    Refract r;
+    CoreReturn (* o) (Position pos, float angle, float normal);
+    EndCallback e;
+} BehaviourElement;
 
-struct RayTracingStruct {
+typedef struct {
     ObjectType type;
     union {
         Line l;
@@ -50,8 +44,7 @@ struct RayTracingStruct {
     BehaviourElement f;
     BehaviourType b_type;
     BehaviourElement b;
-};
-typedef struct RayTracingStruct RayObject;
+} RayObject;
 
 float intersect(Position p, float a, RayObject o, Position *iret, float *nret);
 CoreReturn ray_trace_through_cell(Position p, float a, RayObject* os, int *count);

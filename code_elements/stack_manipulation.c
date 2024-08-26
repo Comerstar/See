@@ -19,6 +19,7 @@ void add_to_string(Stack stk, char c) {
                 e_free(elem);
                 break;
             case String:
+                stk_remove(stk, 0);
                 str = str_add(e->element.s, c);
                 elem = e_from_str(str);
                 stk_push(stk, elem);
@@ -98,18 +99,42 @@ void add_void(Stack stk) {
 
 void add_binop(Stack stk, Bopo op) {
     StackElement e1, e2, res;
-    //printf("Adding binop to stack:\n");
-    //stk_print(bgs_new(), stk);
+    // printf("Adding binop to stack:\n");
+    // stk_print(bgs_new(), stk);
     if (stk_get(stk, 1, &e1)) {
         if (stk_get(stk, 0, & e2)) {
             stk_remove(stk, 0);
             stk_remove(stk, 0);
             res = e_from_binop(op, e1, e2);
             stk_push(stk, res);
-            //printf("Added binop to stack:\n");
-            //stk_print(bgs_new(), stk);
+            // printf("Added binop to stack:\n");
+            // stk_print(bgs_new(), stk);
             e_free(res);
             e_free(e2);
+        }
+        e_free(e1);
+    }
+}
+
+void add_lambda(Stack stk) {
+    StackElement e1, e2, res;
+    // printf("Adding lambda to stack:\n");
+    // stk_print(bgs_new(), stk);
+    if (stk_get(stk, 1, &e1)) {
+        // printf("%s\n", e_to_str(e1));
+        switch (e1->type) {
+            case String:
+                if (stk_get(stk, 0, & e2)) {
+                    stk_remove(stk, 0);
+                    stk_remove(stk, 0);
+                    res = e_from_lambda(e1->element.s, e2);
+                    stk_push(stk, res);
+                    // printf("Added lambda to stack:\n");
+                    // stk_print(bgs_new(), stk);
+                    e_free(res);
+                    e_free(e2);
+                }
+                break;
         }
         e_free(e1);
     }
