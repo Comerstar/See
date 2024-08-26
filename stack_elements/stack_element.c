@@ -1,7 +1,8 @@
 
 #include <stdlib.h>
-#include "stack_element.h"
 #include <stdio.h>
+#include "stack_element.h"
+#include "../bindings.h"
 
 Bindings bgs_new(void);
 bool bgs_find(Bindings, StackString, StackElement *);
@@ -143,6 +144,14 @@ char* e_to_str(StackElement e) {
             free(sres1);
             free(sres2);
             return str;
+        case Fun:
+            str = malloc(sizeof(char) * 100);
+            sres1 = str_to_str(e->element.l.x);
+            sres2 = e_to_str(e->element.l.body);
+            sprintf(str, "%s(%s, %s)", e->element.bop.op.name, sres1, sres2);
+            free(sres1);
+            free(sres2);
+            return str;
     }
 }
 
@@ -219,11 +228,13 @@ StackElement e_evaling_binop(StackElement (* op) (Bindings, StackElement, StackE
         case Float:
         case Void:
         case Unit:
+        case Fun:
             switch (e2->type) {
                 case Int:
                 case Float:
                 case Void:
                 case Unit:
+                case Fun:
                     return op(bgs, e1, e2);
                 case String:
                     if (bgs_find(bgs, e2->element.s, &res2)) {
@@ -248,6 +259,7 @@ StackElement e_evaling_binop(StackElement (* op) (Bindings, StackElement, StackE
                     case Float:
                     case Void:
                     case Unit:
+                    case Fun:
                         ret = op(bgs, res1, e2);
                         e_free(res1);
                         return ret;
@@ -276,6 +288,7 @@ StackElement e_evaling_binop(StackElement (* op) (Bindings, StackElement, StackE
                     case Float:
                     case Void:
                     case Unit:
+                    case Fun:
                         return op(bgs, e1, e2);
                     case String:
                         if (bgs_find(bgs, e2->element.s, &res2)) {
@@ -301,6 +314,7 @@ StackElement e_evaling_binop(StackElement (* op) (Bindings, StackElement, StackE
                 case Float:
                 case Void:
                 case Unit:
+                case Fun:
                     res1 = e_eval(bgs, e1);
                     ret = op(bgs, res1, e2);
                     e_free(res1);
@@ -344,7 +358,7 @@ StackElement e_conc_add(Bindings bgs, StackElement e1, StackElement e2) {
 }
 
 StackElement e_add(Bindings bgs, StackElement e1, StackElement e2) {
-    e_evaling_binop(e_conc_add, bgs, e1, e2);
+    return e_evaling_binop(e_conc_add, bgs, e1, e2);
 }
 
 StackElement e_conc_sub(Bindings bgs, StackElement e1, StackElement e2) {
@@ -360,7 +374,7 @@ StackElement e_conc_sub(Bindings bgs, StackElement e1, StackElement e2) {
 }
 
 StackElement e_sub(Bindings bgs, StackElement e1, StackElement e2) {
-    e_evaling_binop(e_conc_sub, bgs, e1, e2);
+    return e_evaling_binop(e_conc_sub, bgs, e1, e2);
 }
 
 StackElement e_conc_mul(Bindings bgs, StackElement e1, StackElement e2) {
@@ -375,7 +389,7 @@ StackElement e_conc_mul(Bindings bgs, StackElement e1, StackElement e2) {
 }
 
 StackElement e_mul(Bindings bgs, StackElement e1, StackElement e2) {
-    e_evaling_binop(e_conc_mul, bgs, e1, e2);
+    return e_evaling_binop(e_conc_mul, bgs, e1, e2);
 }
 
 StackElement e_conc_div(Bindings bgs, StackElement e1, StackElement e2) {
@@ -390,9 +404,8 @@ StackElement e_conc_div(Bindings bgs, StackElement e1, StackElement e2) {
 }
 
 StackElement e_div(Bindings bgs, StackElement e1, StackElement e2) {
-    e_evaling_binop(e_conc_div, bgs, e1, e2);
+    return e_evaling_binop(e_conc_div, bgs, e1, e2);
 }
-
 
 StackElement e_conc_mod(Bindings bgs, StackElement e1, StackElement e2) {
     switch (e1->type) {
@@ -406,5 +419,25 @@ StackElement e_conc_mod(Bindings bgs, StackElement e1, StackElement e2) {
 }
 
 StackElement e_mod(Bindings bgs, StackElement e1, StackElement e2) {
-    e_evaling_binop(e_conc_mod, bgs, e1, e2);
+    return e_evaling_binop(e_conc_mod, bgs, e1, e2);
+}
+
+StackElement e_conc_apply(Bindings bgs, StackElement e1, StackElement e2) {
+    switch (e1->type) {
+        case Fun:
+            // printf("Applying\n");
+            Bindings new_bgs = bgs_copy(bgs);
+            bgs_add(new_bgs, e1->element.l.x, e_ref(e2));
+            StackElement res = e_eval(new_bgs, e1->element.l.body);
+            bgs_free(new_bgs);
+            return res;
+    }
+    // printf("Applying to non-lambda %s\n", e_to_str(e1));
+    bgs_print(bgs);
+    return e_from_void();
+}
+
+StackElement e_apply(Bindings bgs, StackElement e1, StackElement e2) {
+    // printf("Applying\n");
+    return e_evaling_binop(e_conc_apply, bgs, e1, e2);
 }

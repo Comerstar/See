@@ -19,49 +19,42 @@ struct BindingsStruct {
 };
 typedef struct BindingsStruct *Bindings;
 
-enum StackTypeEnum {
+typedef enum {
     Int, Float, Void, Unit, String, Unop, Binop, Fun
-};
-typedef enum StackTypeEnum StackType;
+} StackType;
 
-
-struct StackFloatStruct {
+typedef struct {
     float value;
     int places;
-};
-typedef struct StackFloatStruct StackFloat;
+} StackFloat;
 
 typedef StackElement (*Uopf) (Bindings, StackElement);
-struct UopStruct {
+
+typedef struct {
     Uopf op;
     char* name;
-};
-typedef struct UopStruct Uopo;
+} Uopo;
 
-struct UnOperatorStruct {
+typedef struct {
     Uopo op;
     StackElement operand;
-};
-typedef struct UnOperatorStruct UnOperator;
+} UnOperator;
 
 typedef StackElement (*Bopf) (Bindings, StackElement, StackElement);
-struct BopStruct {
+typedef struct {
     Bopf op;
     char* name;
-};
-typedef struct BopStruct Bopo;
-struct BinOperatorStruct {
+} Bopo;
+typedef struct {
     Bopo op;
     StackElement left;
     StackElement right;
-};
-typedef struct BinOperatorStruct BinOperator;
+} BinOperator;
 
-struct LambdaStruct {
+typedef struct {
     StackString x;
     StackElement body;
-};
-typedef struct LambdaStruct Lambda;
+} Lambda;
 
 struct StackElementStruct {
     StackType type;
@@ -94,3 +87,4 @@ StackElement e_sub(Bindings, StackElement, StackElement);
 StackElement e_mul(Bindings, StackElement, StackElement);
 StackElement e_div(Bindings, StackElement, StackElement);
 StackElement e_mod(Bindings, StackElement, StackElement);
+StackElement e_apply(Bindings, StackElement, StackElement);
