@@ -81,10 +81,9 @@ StackElement default_input(void) {
     return ret;
 }
 
-struct ThreadInputStruct {
+typedef struct {
     Pointer p; Board board; LanguageBinding binding;
-};
-typedef struct ThreadInputStruct ThreadInput;
+} ThreadInput;
 
 void *pointer_run_loop(void* thread_input) {
     ThreadInput t = *((ThreadInput*)thread_input);
@@ -157,7 +156,9 @@ int main(int argsc, char** argsv) {
         {'O', omirror_func},
         {'P', cap_p_func},
         {'S', cap_s_func},
+        {'Y', cap_y_func},
         {'%', percent_func},
+        {'@', at_func},
         {'X', xmirror_func},
         {'+', plusmirror_func},
         {'?', condmirror_func},
@@ -186,6 +187,7 @@ int main(int argsc, char** argsv) {
         {':', jump_end},
         {'V', down_end},
         {'~', bind_end},
+        {'W', write_end},
         {'\0', 0},
     };
     LanguageBinding binding = create_binding(default_language);

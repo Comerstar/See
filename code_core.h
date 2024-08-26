@@ -7,12 +7,11 @@
 
 typedef void (*EndCallback) (Position pos, float a, Pointer p, Board b, Bindings bgs, Stack stk);
 
-struct CoreReturnStruct {
+typedef struct {
     EndCallback callback;
     Position pos;
     float a;
-};
-typedef struct CoreReturnStruct CoreReturn;
+} CoreReturn;
 
 typedef CoreReturn (*CoreFunction) (Position, float, Board, Bindings, Stack);
 
@@ -24,11 +23,10 @@ struct LanguageBindingStruct {
 };
 typedef struct LanguageBindingStruct *LanguageBinding;
 
-struct LanguageBindingPairStruct {
+typedef struct {
     char c;
     CoreFunction f;
-};
-typedef struct LanguageBindingPairStruct LanguagePair;
+} LanguagePair;
 
 CoreFunction find_language_binding(LanguageBinding, char);
 LanguageBinding create_binding(LanguagePair* pairs);

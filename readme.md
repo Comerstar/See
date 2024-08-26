@@ -54,7 +54,7 @@ is:
 
 ### 1.3 - Pointer Parallelism
 
-Any code which defines multiple pointers will treat each pointer as a thread, and so they will run in parallel.
+Any code which defines multiple pointers will treat each pointer as a thread, and so they will run in parallel. The board state, is locked as appropriate between multiple threads using the Multiple-Readers Single-Writer pattern of locking. This is done because most of the accesses to the board are pointers reading the line of sight.
 
 ## Section 2 - Line of Sight Functional Overview
 
