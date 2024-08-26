@@ -2,11 +2,9 @@
 #pragma once
 #include <stdbool.h>
 
-struct CellStruct {int x, y;};
-typedef struct CellStruct Cell;
+typedef struct {int x, y;} Cell;
 
-struct PositionStruct {Cell cell; float f_x, f_y;};
-typedef struct PositionStruct Position;
+typedef struct {Cell cell; float f_x, f_y;} Position;
 
 Position pos_from_cell(Cell);
 Position next_cell(Position, float);

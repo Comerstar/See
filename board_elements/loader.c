@@ -31,9 +31,8 @@ Board load_file(FILE *fp, PointerList pl, void (*output) (char *), StackElement 
     char buffer[BUFFER_SIZE];
     int x = 0, y = 0, read;
     Board ret = malloc(sizeof(struct BoardStruct));
-    *ret = (struct BoardStruct){0, 0, 0, 0, 0};
-    int rc = pthread_mutex_init(&ret->lock, NULL);
-    if (rc != 0) {
+    *ret = (struct BoardStruct){0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    if (pthread_mutex_init(&ret->access_lock, NULL) != 0 && pthread_mutex_init(&ret->count_lock, NULL) != 0) {
         printf("Failed to initialise board mutex\n");
         return ret;
     }
